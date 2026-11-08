@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-md bg-white border-bottom sticky-top my-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/listings">Explore</a>
+        </li>
+      </ul>
+
+      <form class="d-flex mx-md-auto my-2 my-md-0" role="search" action="/listings" method="GET">
+        <input class="form-control me-2" type="search" name="q"
+               placeholder="Search destinations" aria-label="Search destinations"
+               value="<%= typeof q !== 'undefined' ? q : '' %>">
+        <button class="btn btn-outline-danger" type="submit" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <ul class="navbar-nav ms-md-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/listings/new">Airbnb your home</a>
+        </li>
+
+        <% if (!currUser) { %>
+          <li class="nav-item">
+            <a class="nav-link fw-bold" href="/signup">Sign up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-bold" href="/login">Login</a>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link fw-bold" href="/logout">Logout</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

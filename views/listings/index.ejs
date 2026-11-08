@@ -1,0 +1,120 @@
+<% layout("/layouts/boilerplate") %>
+<%=success%>
+
+<%
+  const activeCategory = typeof category !== "undefined" ? category : null;
+  const searchTerm = typeof q !== "undefined" ? q : "";
+  const categories = [
+    { name: "Trending",      icon: "fa-solid fa-fire" },
+    { name: "Rooms",         icon: "fa-solid fa-bed" },
+    { name: "Iconic Cities", icon: "fa-solid fa-mountain-city" },
+    { name: "Mountains",     icon: "fa-solid fa-mountain-sun" },
+    { name: "Castles",       icon: "fa-brands fa-fort-awesome" },
+    { name: "Pools",         icon: "fa-solid fa-water-ladder" },
+    { name: "Camping",       icon: "fa-solid fa-campground" },
+    { name: "Farms",         icon: "fa-solid fa-building-wheat" },
+    { name: "Arctic",        icon: "fa-solid fa-igloo" },
+  ];
+%>
+
+<style>
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .filter {
+    margin-top: 2rem;
+    text-align: center;
+    margin-right: 2rem;
+    color: grey;
+    text-decoration: none;
+  }
+  .filter:hover,
+  .filter.active {
+    color: black;
+    cursor: pointer;
+  }
+  .filter.active {
+    border-bottom: 2px solid black;
+  }
+  .filter p {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+  .tax-toggle {
+    margin-top: 1.6rem;
+    margin-left: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem 0.5rem 3rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    background: #fff;
+  }
+</style>
+
+<div id="filters">
+  <% for (let c of categories) {
+       const parts = [];
+       if (activeCategory !== c.name) parts.push("category=" + encodeURIComponent(c.name));
+       if (searchTerm) parts.push("q=" + encodeURIComponent(searchTerm));
+  %>
+    <a class="filter <%= activeCategory === c.name ? 'active' : '' %>"
+       href="/listings<%= parts.length ? '?' + parts.join('&') : '' %>">
+      <div><i class="<%= c.icon %>"></i></div>
+      <p><%= c.name %></p>
+    </a>
+  <% } %>
+
+  <div class="tax-toggle form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" id="taxSwitch">
+    <label class="form-check-label" for="taxSwitch">Display total after taxes</label>
+  </div>
+</div>
+
+<% if (allListings.length === 0) { %>
+  <p class="mt-4">
+    No listings found<%= searchTerm ? ' for "' + searchTerm + '"' : '' %><%= activeCategory ? ' in ' + activeCategory : '' %>.
+  </p>
+<% } %>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for (let listing of allListings) { %>
+    <a href="/listings/<%= listing._id %>" class="listing-link">
+      <div class="listing-card">
+        <img src="<%= listing.image.url %>" class="listing-img" alt="listing_image" />
+        <div class="listing-info">
+          <b><%= listing.title %></b><br />
+          <span class="price-base">&#8377; <%= (listing.price || 0).toLocaleString("en-IN") %> / night</span>
+          <span class="price-total" style="display:none;">
+            &#8377; <%= Math.round((listing.price || 0) * 1.18).toLocaleString("en-IN") %> / night
+            <small class="text-muted">(incl. 18% GST)</small>
+          </span>
+        </div>
+      </div>
+    </a>
+  <% } %>
+</div>
+
+<script>
+  (function () {
+    const taxSwitch = document.getElementById("taxSwitch");
+    if (!taxSwitch) return;
+
+    function apply(show) {
+      document.querySelectorAll(".price-base").forEach(el => el.style.display = show ? "none" : "inline");
+      document.querySelectorAll(".price-total").forEach(el => el.style.display = show ? "inline" : "none");
+    }
+
+    let saved = false;
+    try { saved = localStorage.getItem("showTax") === "1"; } catch (e) {}
+    taxSwitch.checked = saved;
+    apply(saved);
+
+    taxSwitch.addEventListener("change", function () {
+      try { localStorage.setItem("showTax", taxSwitch.checked ? "1" : "0"); } catch (e) {}
+      apply(taxSwitch.checked);
+    });
+  })();
+</script>

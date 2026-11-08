@@ -1,0 +1,44 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <h2>Edit Listing</h2>
+        <form method="post" action="/listings/<%= listing.id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" value="<%= listing.title %>" name="listing[title]" id="title" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="listing[description]" id="description" class="form-control" required><%= listing.description %></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current Image</label><br>
+                <img src="<%=originalImageUrl %>" class="img-fluid mb-2" style="max-height: 200px;" alt="Current image">
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload New Image (optional)</label>
+                <input type="file" name="listing[image]" id="image" class="form-control" accept="image/png, image/jpeg">
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" min="0" value="<%= listing.price %>" name="listing[price]" id="price" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" name="listing[country]" value="<%= listing.country %>" id="country" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="listing[location]" value="<%= listing.location %>" id="location" class="form-control" required>
+            </div>
+
+            <button class="btn btn-dark edit-btn mb-4">Edit</button>
+        </form>
+    </div>
+</div>
